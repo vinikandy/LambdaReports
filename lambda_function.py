@@ -9,6 +9,7 @@ ct = boto3.client('cloudtrail')
 cfg = boto3.client('config')
 s3 = boto3.resource('s3')
 rds = boto3.client('rds')
+sqs = botos.client('sqs')
 
 def lambda_handler(event, context):
 
