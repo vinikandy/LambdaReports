@@ -8,8 +8,12 @@ Resources:
       Handler: index.handler
       Runtime: Python 3.6
       CodeUri: .
+      Description: Resources report 
+      MemorySize: 1536
+      Timeout: 10
+      Role: 'arn:aws:iam::707765467002:role/LambdaReports'
       Events:
-        MyTimeApi:
+        Api1:
           Type: Api
           Properties:
             Path: /LambdaReports
