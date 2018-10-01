@@ -17,7 +17,8 @@ Resources:
           Type: Api
           Properties:
             Path: /report
-            Method: GET
+            Method: ANY
+            AuthorizationType: NONE
      # Environment:
        # Variables:
          # URL: imgdev.spocast.live.s3-website-us-east-2.amazonaws.com
