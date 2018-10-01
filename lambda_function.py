@@ -2,9 +2,6 @@ import boto3
 import boto3.ec2
 import json
 
-#from boto.vpc import VPCConnection
-
-# calling sns service in boto3
 ec2 = boto3.client('ec2')
 sqs = boto3.resource('sqs')
 iam = boto3.client('iam')
@@ -14,7 +11,7 @@ cfg = boto3.client('config')
 sns = boto3.client('sns')
 s3 = boto3.resource('s3')
 
-
+# resource report
 def lambda_handler(event, context): 
     infra_report=get_vpc_details()
     infra_report.update(get_iam_roles_policies())
@@ -24,15 +21,16 @@ def lambda_handler(event, context):
     infra_report.update(list_rds_instances())
     
 
-    # sqs
+    #  posting json to sqs 
     queue = sqs.get_queue_by_name(QueueName='lambda-reports-queue')
     response = queue.send_message(MessageBody=json.dumps(infra_report))
     
-    
+# return dictionary     
 def report(report_name,report_value):
         report_str={report_name:report_value}
         return report_str
-    
+
+# Region, VPC, subnet & EC2 details    
 def get_vpc_details():
         regions_lst = ec2.describe_regions()['Regions']
         region_names = [d['RegionName'] for d in regions_lst]
@@ -94,7 +92,7 @@ def get_vpc_details():
 
         return{"Number of VPC in a region Report":region_report,"VPC details Report":vpc_report,"Number of subntes in a VPC Report":subnets_cnt_report,"subnet details Report":subnet_details_report,"Number of Instances in a subnet Report":ec2_cnt_report,"ec2 details Report":ec2_details_report}          
 
-    #list number of iam roles and attached policies
+#list number of iam roles and attached policies
 def get_iam_roles_policies():
         roles_cnt_report={}
         policy_cnt_report={}
@@ -110,7 +108,7 @@ def get_iam_roles_policies():
         return{"Number of Roles":len(role_lst),"Number of attached policies to a role":policy_cnt_report}
     
     
-    # List if CloudTrail is enabled or not
+# List  CloudTrail is enabled or not
 def cloudtrail_check():
         cloud_details_report=[]
         ct_lst=ct.describe_trails()['trailList']
@@ -124,7 +122,7 @@ def cloudtrail_check():
             cloud_details_report.append(x)
         return{"cloud trail Report":cloud_details_report}       
 
-    # List if Config is on or not
+# List  Config is on or not
 def config_check():
         config_details_report=[]
         cfg_lst=cfg.get_discovered_resource_counts()['resourceCounts']
@@ -134,14 +132,14 @@ def config_check():
         return{"config Report":config_details_report}    
 
     
-    #list of s3 buckets
+#list of s3 buckets
 def list_buckets():
         bucket_list=[]
         for bucket in s3.buckets.all():
             bucket_list.append(bucket.name)
         return{"bucket list":bucket_list} 
         
-     #list of rds instances
+#list of rds instances
 def list_rds_instances():
         rds_response = rds.describe_db_instances()['DBInstances']
         rds_lst = []
@@ -149,7 +147,6 @@ def list_rds_instances():
             rds_lst.append(rid['DBInstanceIdentifier'])
         return{"RDS Instance list":rds_lst}     
    
-    #print(list_rds_instances())
+ 
     
    
-  
