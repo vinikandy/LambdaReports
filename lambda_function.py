@@ -1,5 +1,6 @@
 import boto3
 import boto3.ec2
+import json
 
 # calling sns service in boto3
 ec2 = boto3.client('ec2')
@@ -11,6 +12,10 @@ rds = boto3.client('rds')
 
 def lambda_handler(event, context):
 
+    # sqs
+    queue = sqs.get_queue_by_name(QueueName='lambda-reports-queue')
+    
+
     # Retrieves all regions/endpoints that work with EC2
     regions_list = ec2.describe_regions()['Regions']
     #print(type(regions_list))
@@ -20,7 +25,7 @@ def lambda_handler(event, context):
 
     # VPC details
     for r in region_names:
-        print("Region: ",r)
+        response = queue.send_message(MessageBody=json.dumps(print("Region: ",r)))
         ec2r = boto3.resource('ec2', region_name=r)
         vpc_lst=[]
         for v1 in ec2r.vpcs.all():
