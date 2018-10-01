@@ -1,20 +1,20 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Transform: AWS::Serverless-2016-10-31
-Description: Outputs Service Reports
+Transform: 'AWS::Serverless-2016-10-31'
+Description: An AWS Serverless Specification template describing your function.
 Resources:
-  TimeFunction:
-    Type: AWS::Serverless::Function
+  servicereports:
+    Type: 'AWS::Serverless::Function'
     Properties:
-      Handler: index.handler
-      Runtime: Python 3.6
+      Handler: lambda_function.lambda_handler
+      Runtime: python3.6
       CodeUri: .
-      Description: Resources report 
-      MemorySize: 1536
-      Timeout: 10
+      Description: ''
+      MemorySize: 128
+      Timeout: 60
       Role: 'arn:aws:iam::707765467002:role/LambdaReports'
       Events:
         Api1:
           Type: Api
           Properties:
-            Path: /LambdaReports
-            Method: ANY
+            Path: /report
+            Method: POST            
