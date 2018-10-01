@@ -7,7 +7,7 @@ Resources:
     Properties:
       Handler: index.handler
       Runtime: Python 3.6
-      CodeUri: ./
+      CodeUri: .
       Events:
         MyTimeApi:
           Type: Api
