@@ -23,7 +23,10 @@ def lambda_handler(event, context):
 
     #  posting json to sqs 
     queue = sqs.get_queue_by_name(QueueName='lambda-reports-queue')
-    response = queue.send_message(MessageBody=json.dumps(infra_report))
+    response = queue.send_message(MessageBody=json.dumps(infra_report,indent=2))
+    #sns
+    topic_arn = 'arn:aws:sns:us-west-1:707765467002:AWSReports'
+    sns.publish(TopicArn=topic_arn,Message=json.dumps(infra_report,indent=2))
     
 # return dictionary     
 def report(report_name,report_value):
